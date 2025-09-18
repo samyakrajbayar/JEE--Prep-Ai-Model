@@ -1,0 +1,315 @@
+# JEE Preparation AI Model - Setup Guide
+
+## Overview
+This is a comprehensive AI-powered JEE preparation system that includes:
+- Previous Year Questions (PYQ) database
+- AI-generated questions similar to JEE patterns
+- Adaptive learning based on student performance
+- Complete JEE syllabus coverage
+- Discord bot interface
+- Progress analytics and weak topic identification
+
+## Requirements
+
+Create a `requirements.txt` file:
+
+```
+discord.py==2.3.2
+openai==0.28.0
+numpy==1.24.3
+scikit-learn==1.3.0
+requests==2.31.0
+sqlite3
+asyncio
+datetime
+json
+random
+os
+dataclasses
+typing
+```
+
+## Setup Instructions for Replit
+
+### 1. Create New Repl
+- Go to Replit.com
+- Create a new Python repl
+- Upload the main Python file
+
+### 2. Install Dependencies
+Run in Replit console:
+```bash
+pip install discord.py openai numpy scikit-learn requests
+```
+
+### 3. Environment Variables (Secrets)
+In Replit, go to "Secrets" tab and add:
+
+```
+OPENAI_API_KEY=your_openai_api_key_here
+DISCORD_TOKEN=your_discord_bot_token_here
+```
+
+### 4. File Structure
+```
+jee-ai-model/
+├── main.py (the main code file)
+├── requirements.txt
+├── jee_data.db (created automatically)
+└── README.md
+```
+
+## Discord Bot Setup
+
+### 1. Create Discord Application
+1. Go to https://discord.com/developers/applications
+2. Click "New Application"
+3. Give it a name (e.g., "JEE Prep Bot")
+4. Go to "Bot" section
+5. Click "Add Bot"
+6. Copy the token and add to Replit secrets as `DISCORD_TOKEN`
+
+### 2. Bot Permissions
+In Discord Developer Portal:
+- Go to OAuth2 > URL Generator
+- Select "bot" scope
+- Select permissions:
+  - Send Messages
+  - Embed Links
+  - Read Message History
+  - Use Slash Commands
+
+### 3. Invite Bot to Server
+Use the generated URL to invite the bot to your Discord server.
+
+## Usage
+
+### Console Mode (if no Discord token)
+```python
+# Interactive commands:
+> question Physics          # Get a physics question
+> analytics user123         # View user analytics  
+> syllabus Chemistry       # View chemistry syllabus
+> quit                     # Exit
+```
+
+### Discord Bot Commands
+
+```
+!start [subject]           # Start practice session
+!answer A                  # Submit answer (A/B/C/D)
+!analytics                 # View your progress
+!syllabus [subject]        # View syllabus
+!generate Physics Medium   # Generate new question
+```
+
+## Features
+
+### 1. Question Database
+- SQLite database for PYQs
+- Categorized by subject, chapter, topic, difficulty
+- Year-wise questions from JEE Main/Advanced
+
+### 2. AI Question Generation
+- Uses OpenAI GPT for generating JEE-style questions
+- Maintains JEE pattern and difficulty levels
+- Covers entire syllabus systematically
+
+### 3. Adaptive Learning
+- Tracks user performance per topic
+- Identifies weak and strong areas
+- Personalizes question selection
+- Progress analytics and recommendations
+
+### 4. Complete Syllabus Coverage
+```
+Physics: Mechanics, Thermodynamics, Electrodynamics, Optics, Modern Physics
+Chemistry: Physical, Inorganic, Organic Chemistry
+Mathematics: Algebra, Trigonometry, Coordinate Geometry, Calculus, Vectors, Probability
+```
+
+### 5. Discord Integration
+- Real-time practice sessions
+- Embedded question display
+- Progress tracking per user
+- Group study features
+
+## API Integration
+
+### OpenAI API (Optional)
+- Used for generating new questions
+- Requires API key (paid service)
+- Falls back to sample questions if not available
+
+### Potential Additional APIs
+```python
+# Example integrations you can add:
+
+# 1. YouTube API for video solutions
+import googleapiclient.discovery
+
+# 2. Wolfram Alpha for mathematical solutions  
+import wolframalpha
+
+# 3. Wikipedia API for concept explanations
+import wikipedia
+
+# 4. Google Sheets API for question import
+from googleapiclient.discovery import build
+```
+
+## Database Schema
+
+### Questions Table
+```sql
+CREATE TABLE questions (
+    id TEXT PRIMARY KEY,
+    subject TEXT,
+    chapter TEXT, 
+    topic TEXT,
+    difficulty TEXT,
+    question_text TEXT,
+    options TEXT,
+    correct_answer TEXT,
+    solution TEXT,
+    year INTEGER,
+    exam_type TEXT,
+    question_type TEXT
+);
+```
+
+### Student Progress Table
+```sql
+CREATE TABLE student_progress (
+    user_id TEXT PRIMARY KEY,
+    subject_scores TEXT,
+    weak_topics TEXT,
+    strong_topics TEXT,
+    total_questions_attempted INTEGER,
+    correct_answers INTEGER,
+    last_session TEXT
+);
+```
+
+## Extending the System
+
+### 1. Add More Question Sources
+```python
+def import_questions_from_pdf(pdf_path):
+    # Parse PDF and extract questions
+    pass
+
+def scrape_questions_from_website(url):
+    # Web scraping for more PYQs
+    pass
+```
+
+### 2. Advanced Analytics
+```python
+def generate_performance_report(user_id):
+    # Detailed performance analysis
+    # Topic-wise time analysis
+    # Difficulty progression tracking
+    pass
+```
+
+### 3. Study Plans
+```python
+def create_study_plan(user_id, target_date, target_score):
+    # AI-generated personalized study plans
+    # Daily question targets
+    # Topic scheduling
+    pass
+```
+
+## Running the Application
+
+### For Development
+```bash
+python main.py
+```
+
+### For Production (Replit)
+- Click "Run" button in Replit
+- Bot will start automatically
+- Monitor console for logs
+
+## Troubleshooting
+
+### Common Issues
+
+1. **Discord Token Error**
+   - Ensure token is correctly set in secrets
+   - Check bot permissions in Discord server
+
+2. **OpenAI API Error**
+   - Verify API key is valid
+   - Check API usage limits
+   - System works without API key using sample questions
+
+3. **Database Issues**
+   - Database is created automatically
+   - Check file permissions in Replit
+
+4. **Import Errors**
+   - Run `pip install -r requirements.txt`
+   - Some packages might need specific versions
+
+### Performance Optimization
+
+1. **Database Indexing**
+```sql
+CREATE INDEX idx_subject ON questions(subject);
+CREATE INDEX idx_difficulty ON questions(difficulty);  
+CREATE INDEX idx_topic ON questions(topic);
+```
+
+2. **Caching**
+```python
+from functools import lru_cache
+
+@lru_cache(maxsize=100)
+def get_cached_questions(subject, difficulty):
+    # Cache frequently accessed questions
+    pass
+```
+
+## Contributing
+
+### Adding New Questions
+1. Format questions according to the Question dataclass
+2. Use the database.add_question() method
+3. Ensure proper categorization
+
+### Adding New Features
+1. Follow the existing code structure
+2. Add appropriate error handling
+3. Update Discord commands if needed
+4. Test thoroughly before deployment
+
+## License and Usage
+
+This is an educational project. Ensure compliance with:
+- OpenAI API terms of service
+- Discord bot guidelines
+- JEE examination board policies
+- Copyright laws for question content
+
+## Support
+
+For issues and questions:
+1. Check the troubleshooting section
+2. Review Replit console logs
+3. Test individual components separately
+4. Verify all API keys and tokens
+
+## Future Enhancements
+
+1. **Mobile App Integration**
+2. **Real-time Multiplayer Quizzes**
+3. **AI Tutoring Chat Interface**
+4. **Video Solution Integration**
+5. **Performance Prediction Models**
+6. **Exam Simulation Mode**
+7. **Social Features (Study Groups)**
+8. **Offline Mode Support**
